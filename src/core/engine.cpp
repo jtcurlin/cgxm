@@ -1,6 +1,7 @@
 // src/engine.cpp
 
-#include "core/engine.h"
+#include <cgxm/core/engine.h>
+#include <cgxm/core/log.hpp>
 #include <chrono>
 #include <thread>
 #include <iostream>
@@ -12,21 +13,22 @@ namespace cgxm::core
 
 void Engine::init() 
 {
-  std::cout << "[cgxm] Engine::start()" << std::endl;
+    log::init();
+    LOG_TRACE("initialized");
 }
 
 void Engine::run() 
 {
     for(int i=0; i<4; i++)
     {
-        std::cout << "[cgxm] Engine::run() -- iteration " << i << std::endl;
+        LOG_TRACE("iteration #{}", i);
         std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_DURATION));
     }
 }
 
 void Engine::stop() 
 {
-  std::cout << "[cgxm] Engine::stop()" << std::endl;
+    LOG_TRACE("shutting down");
 }
 
 }

@@ -1,0 +1,38 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "debug-ninja",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release-ninja",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "xcode-multi",
+      "generator": "Xcode",
+      "binaryDir": "${sourceDir}/build/xcode"
+    }
+  ],
+  "buildPresets": [
+    { "name": "debug", "configurePreset": "debug-ninja" },
+    { "name": "release", "configurePreset": "release-ninja" },
+    { "name": "xcode", "configurePreset": "xcode-multi" }
+  ],
+  "testPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug-ninja",
+      "output": { "outputOnFailure":  true }
+    }
+  ]
+}
