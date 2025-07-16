@@ -1,14 +1,14 @@
 // tests/deque_tests.cpp
 
 #include <gtest/gtest.h>
-#include "container/deque.hpp"
+#include "container/ts_deque.hpp"
 
-class DequeTest : public ::testing::Test
+class TSDequeTest : public ::testing::Test
 {
 protected:
     void SetUp() override
     {
-        deque = new cgxm::Deque<int*>(3);
+        deque = new cgxm::ts_deque<int*>(3);
     }
 
     void TearDown() override
@@ -16,16 +16,16 @@ protected:
         delete deque;
     }
 
-    cgxm::Deque<int*>* deque;
+    cgxm::ts_deque<int*>* deque;
 };
 
-TEST_F(DequeTest, IsInitiallyEmpty)
+TEST_F(TSDequeTest, IsInitiallyEmpty)
 {
     ASSERT_TRUE(deque->empty());
     ASSERT_EQ(deque->size(), 0);
 }
 
-TEST_F(DequeTest, PushIncreasesSize)
+TEST_F(TSDequeTest, PushIncreasesSize)
 {
     int x = 10;
     deque->push(&x);
@@ -33,7 +33,7 @@ TEST_F(DequeTest, PushIncreasesSize)
     ASSERT_EQ(deque->size(), 1);
 }
 
-TEST_F(DequeTest, PopDecreasesSize)
+TEST_F(TSDequeTest, PopDecreasesSize)
 {
     int x = 10;
     deque->push(&x);
@@ -45,7 +45,7 @@ TEST_F(DequeTest, PopDecreasesSize)
     ASSERT_EQ(deque->size(), 0);
 }
 
-TEST_F(DequeTest, PopFollowsLIFO)
+TEST_F(TSDequeTest, PopFollowsLIFO)
 {
     int x = 10, y = 20, z = 30;
     deque->push(&x);
@@ -58,21 +58,21 @@ TEST_F(DequeTest, PopFollowsLIFO)
     ASSERT_TRUE(deque->empty());
 }
 
-TEST_F(DequeTest, PopFromEmptyReturnsNull)
+TEST_F(TSDequeTest, PopFromEmptyReturnsNull)
 {
     ASSERT_TRUE(deque->empty());
     int* val = deque->pop();
     ASSERT_EQ(val, nullptr);
 }
 
-TEST_F(DequeTest, StealFromEmptyReturnsNull)
+TEST_F(TSDequeTest, StealFromEmptyReturnsNull)
 {
     ASSERT_TRUE(deque->empty());
     int* val = deque->steal();
     ASSERT_EQ(val, nullptr);
 }
 
-TEST_F(DequeTest, StealFollowsFIFO) {
+TEST_F(TSDequeTest, StealFollowsFIFO) {
     int x = 10, y = 20, z = 30;
     deque->push(&x);
     deque->push(&y);
@@ -85,7 +85,7 @@ TEST_F(DequeTest, StealFollowsFIFO) {
     ASSERT_EQ(deque->size(), 1);
 }
 
-TEST_F(DequeTest, ResizeOnOverflow)
+TEST_F(TSDequeTest, ResizeOnOverflow)
 {
     ASSERT_EQ(deque->capacity(), 8);
     int values[9];

@@ -2,8 +2,7 @@
 
 int main() 
 {
-
-    Sandbox* sandbox = new Sandbox(); 
+    Sandbox* sandbox = new Sandbox();
     sandbox->init();
     sandbox->run();
     sandbox->stop();

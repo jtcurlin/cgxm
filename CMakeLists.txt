@@ -19,21 +19,34 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# find_library(APPLE_FWK_FOUNDATION Foundation REQUIRED)
-# find_library(APPLE_FWK_APPKIT AppKit REQUIRED)
-# find_library(APPLE_FWK_QUARTZ_CORE QuartzCore REQUIRED)
-# find_library(APPLE_FWK_METAL Metal REQUIRED)
+# macos libs
+find_library(APPLE_FWK_FOUNDATION Foundation REQUIRED)
+find_library(APPLE_FWK_APPKIT AppKit REQUIRED)
+find_library(APPLE_FWK_QUARTZ_CORE QuartzCore REQUIRED)
+find_library(APPLE_FWK_METAL Metal REQUIRED)
 
 add_library(cgxm STATIC)
 
-# set_target_properties(cgxm PROPERTIES 
+# set_target_properties(cgxm PROPERTIES
 #   MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist"
 # )
 
-target_sources(cgxm PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/engine.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/log.cpp
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/core/platform.mm
+        PROPERTIES COMPILE_FLAGS "-fobjc-arc")
+
+target_sources(cgxm
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/engine.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/log.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/platform.mm
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/container/ts_deque.hpp
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/cgxm/core/engine.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/cgxm/core/log.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/cgxm/core/platform.hpp
 )
+
 
 target_include_directories(cgxm
   PUBLIC
@@ -42,23 +55,23 @@ target_include_directories(cgxm
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(cgxm PRIVATE quill::quill)
-
-# target_link_libraries(cgxm
-#   ${APPLE_FWK_FOUNDATION}
-#   ${APPLE_FWK_QUARTZ_CORE}
-#   ${APPLE_FWK_METAL}
-#   ${APPLE_FWK_APPKIT}
-# )
+target_link_libraries(cgxm
+        PRIVATE
+        quill::quill
+        ${APPLE_FWK_FOUNDATION}
+        ${APPLE_FWK_QUARTZ_CORE}
+        ${APPLE_FWK_METAL}
+        ${APPLE_FWK_APPKIT}
+)
 
 # ?? add_executable(cgxm-editor MACOSX_BUNDLE src/editor/main.cpp)
 
 enable_testing()
 
-add_executable(deque_test ${CMAKE_CURRENT_SOURCE_DIR}/tests/deque_test.cpp)
-target_include_directories(deque_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_link_libraries(deque_test PRIVATE cgxm GTest::gtest_main)
+add_executable(ts_deque_test ${CMAKE_CURRENT_SOURCE_DIR}/tests/ts_deque_test.cpp)
+target_include_directories(ts_deque_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_link_libraries(ts_deque_test PRIVATE cgxm GTest::gtest_main)
 
 include (GoogleTest)
-gtest_discover_tests(deque_test)
+gtest_discover_tests(ts_deque_test)
 add_subdirectory(examples)

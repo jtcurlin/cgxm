@@ -1,4 +1,5 @@
 // src/containers/deque.cpp
+// thread safe deque
 
 #pragma once
 #include <cstdint>
@@ -9,7 +10,7 @@
 namespace cgxm
 {
 template<typename T>
-class Deque
+class ts_deque
 {
     struct Array
     {
@@ -53,8 +54,8 @@ class Deque
     };
 
 public:
-    explicit Deque(int64_t log_size = DEFAULT_DEQUE_LOG_SIZE);
-    ~Deque();
+    explicit ts_deque(int64_t log_size = DEFAULT_DEQUE_LOG_SIZE);
+    ~ts_deque();
 
     bool    empty() const noexcept;
     size_t  size() const noexcept;
@@ -74,7 +75,7 @@ private:
 };
 
 template<typename T>
-Deque<T>::Deque(int64_t log_size)
+ts_deque<T>::ts_deque(int64_t log_size)
 {
     m_top.store(0, std::memory_order_relaxed);
     m_btm.store(0, std::memory_order_relaxed);
@@ -83,7 +84,7 @@ Deque<T>::Deque(int64_t log_size)
 }
 
 template<typename T>
-Deque<T>::~Deque()
+ts_deque<T>::~ts_deque()
 {
     for (auto a : m_garbage) {
         delete a;
@@ -92,7 +93,7 @@ Deque<T>::~Deque()
 }
 
 template<typename T>
-bool Deque<T>::empty() const noexcept
+bool ts_deque<T>::empty() const noexcept
 {
     int64_t top = m_top.load(std::memory_order_relaxed);
     int64_t btm = m_btm.load(std::memory_order_relaxed);
@@ -100,7 +101,7 @@ bool Deque<T>::empty() const noexcept
 }
 
 template <typename T>
-size_t Deque<T>::size() const noexcept
+size_t ts_deque<T>::size() const noexcept
 {
     int64_t top = m_top.load(std::memory_order_relaxed);
     int64_t btm = m_btm.load(std::memory_order_relaxed);
@@ -108,7 +109,7 @@ size_t Deque<T>::size() const noexcept
 }
 
 template <typename T>
-void Deque<T>::push(T o)
+void ts_deque<T>::push(T o)
 {
     int64_t btm   = m_btm.load(std::memory_order_relaxed);
     int64_t top   = m_top.load(std::memory_order_acquire);
@@ -125,7 +126,7 @@ void Deque<T>::push(T o)
 }
 
 template <typename T>
-T Deque<T>::pop()
+T ts_deque<T>::pop()
 {
     int64_t btm   = m_btm.load(std::memory_order_relaxed) - 1;
     Array*  array = m_array.load(std::memory_order_relaxed);
@@ -154,7 +155,7 @@ T Deque<T>::pop()
 }
 
 template <typename T>
-T Deque<T>::steal()
+T ts_deque<T>::steal()
 {
     int64_t top = m_top.load(std::memory_order_acquire);
     std::atomic_thread_fence(std::memory_order_seq_cst);
@@ -174,13 +175,13 @@ T Deque<T>::steal()
 }
 
 template <typename T>
-int64_t Deque<T>::capacity() const noexcept
+int64_t ts_deque<T>::capacity() const noexcept
 {
     return m_array.load(std::memory_order_relaxed)->capacity();
 }
 
 template <typename T>
-Deque<T>::Array* Deque<T>::resize_array(Array* array, int64_t btm, int64_t top)
+ts_deque<T>::Array* ts_deque<T>::resize_array(Array* array, int64_t btm, int64_t top)
 {
     Array* tmp = array->resize(btm, top);
     m_garbage.push_back(array);

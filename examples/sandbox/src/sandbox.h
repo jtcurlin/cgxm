@@ -1,6 +1,8 @@
+//examples/sandbox/src/sandbox.h
+
 #pragma once
 
-#include <cgxm/core/engine.h>
+#include <cgxm/core/engine.hpp>
 
 class Sandbox final : public cgxm::core::Engine
 {
