@@ -31,22 +31,31 @@ add_library(cgxm STATIC)
 #   MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist"
 # )
 
-set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/core/platform.mm
+set_source_files_properties(
+        # ${CMAKE_CURRENT_SOURCE_DIR}/src/render/metal/renderer.mm
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/darwin/app.mm
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/darwin/window.mm
         PROPERTIES COMPILE_FLAGS "-fobjc-arc")
 
 target_sources(cgxm
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/engine.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/log.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/platform.mm
+
+        # ${CMAKE_CURRENT_SOURCE_DIR}/src/render/metal/renderer.mm
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/window.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/app.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/darwin/app.mm
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/darwin/window.mm
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/container/ts_deque.hpp
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include/cgxm/core/engine.hpp
         ${CMAKE_CURRENT_SOURCE_DIR}/include/cgxm/core/log.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/cgxm/core/platform.hpp
-)
 
+        # ${CMAKE_CURRENT_SOURCE_DIR}/include/cgxm/render/renderer.hpp
+)
 
 target_include_directories(cgxm
   PUBLIC

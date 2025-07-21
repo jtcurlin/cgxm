@@ -1,10 +1,13 @@
 #pragma once
 #include <memory>
 
+namespace cgxm::platform
+{
+    class App;
+}
+
 namespace cgxm::core
 {
-
-class Platform;
 
 class Engine {
   public:
@@ -17,7 +20,7 @@ class Engine {
 
   private:
     // bool                      m_is_running{false};
-    std::unique_ptr<Platform> m_platform;
+    std::unique_ptr<platform::App> m_app;
 
 };
 
